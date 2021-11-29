@@ -14,7 +14,7 @@ jobs:
         with:
           hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
           privateKey: ${{secrets.KEY}}
-	  debug : true
+	  debug: true
           command: | 
 	   sudo git clone git@github.com:aqilspc/docker-laravel-kuis2.git
            cd docker-laravel-kuis2
@@ -28,7 +28,7 @@ jobs:
         with:
           hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
           privateKey: ${{secrets.KEY}}
-          debug : true
+          debug: true
           command: |
 	     cd ${{secrets.DIR}}
 	     sudo docker-compose ps
