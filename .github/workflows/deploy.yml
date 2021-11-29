@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Clone Deployment Configuration'
-        uses: appleboy/scp-action@master
+        uses: JimCronqvist/action-ssh@master
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.KEY}}
-          script: | 
+          hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
+          privateKey: ${{secrets.KEY}}
+	  debug : true
+          command: | 
 	   sudo git clone git@github.com:aqilspc/docker-laravel-kuis2.git
            cd docker-laravel-kuis2
 	   sudo git clone --single-branch --branch ${{secrets.BRANCH}} ${{secrets.REPO}}
@@ -24,12 +24,12 @@ jobs:
 	   sudo docker-compose restart
 	   rm -r ${{secrets.DIR}}
       - name: 'Reconnect and Publish'
-        uses: appleboy/ssh-action@master
+         uses: JimCronqvist/action-ssh@master
         with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.KEY}}
-          script: |
+          hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
+          privateKey: ${{secrets.KEY}}
+          debug : true
+          command: |
 	     cd ${{secrets.DIR}}
 	     sudo docker-compose ps
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} composer install
