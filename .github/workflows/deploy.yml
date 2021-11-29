@@ -16,12 +16,14 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-	   cd /home/${{secrets.USERNAME}} && git clone git@github.com:aqilspc/docker-laravel-kuis2.git
-	   cd /home/${{secrets.USERNAME}} && mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2/
-	   cd /home/${{secrets.USERNAME}} && rm -r ${{secrets.DIR}}
-	   cd /home/${{secrets.USERNAME}} && git clone --single-branch --branch ${{secrets.BRANCH}} ${{secrets.REPO}}
-	   cd /home/${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose up -d --remove-orphans
-	   cd /home/${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose restart
+	   cd ${{secrets.USERNAME}} && 
+	   sudo git clone git@github.com:aqilspc/docker-laravel-kuis2.git
+	   sudo mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2/
+	   sudo rm -r ${{secrets.DIR}}
+	   sudo git clone --single-branch --branch ${{secrets.BRANCH}} ${{secrets.REPO}}
+	   cd ${{secrets.DIR}} 
+	   sudo docker-compose up -d --remove-orphans
+	   sudo docker-compose restart
       - name: 'Reconnect and Publish'
         uses: appleboy/ssh-action@master
         with:
@@ -29,27 +31,27 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-	     cd /home/${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose ps
-	     docker exec ${{secrets.CONTAINER_NAME}} composer install
-             docker exec ${{secrets.CONTAINER_NAME}} rm .env	
-	     docker exec ${{secrets.CONTAINER_NAME}} touch .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_NAME=${{secrets.APP_NAME}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_URL=${{secrets.HOST}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_ENV=local' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_KEY=${{secrets.APP_KEY}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_DEBUG=true' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_CHANNEL=stack' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_LEVEL=debug' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_CONNECTION=${{secrets.DB_CONNECTION}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_HOST=${{secrets.DB_HOST}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PORT=${{secrets.DB_PORT}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_DATABASE=${{secrets.DB_DATABASE}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_USERNAME=${{secrets.DB_USERNAME}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'BROADCAST_DRIVER=log' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'CACHE_DRIVER=file' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'QUEUE_CONNECTION=sync' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_DRIVER=file' >> .env
+	     cd ${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose ps
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} composer install
+             sudo docker exec ${{secrets.CONTAINER_NAME}} rm .env	
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} touch .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_NAME=${{secrets.APP_NAME}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_URL=${{secrets.HOST}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_ENV=local' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_KEY=${{secrets.APP_KEY}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_DEBUG=true' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_CHANNEL=stack' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_LEVEL=debug' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_CONNECTION=${{secrets.DB_CONNECTION}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_HOST=${{secrets.DB_HOST}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PORT=${{secrets.DB_PORT}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_DATABASE=${{secrets.DB_DATABASE}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_USERNAME=${{secrets.DB_USERNAME}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'BROADCAST_DRIVER=log' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'CACHE_DRIVER=file' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'QUEUE_CONNECTION=sync' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_DRIVER=file' >> .env
 	     docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_LIFETIME=120' >> .env
 	     docker exec ${{secrets.CONTAINER_NAME}} php artisan migrate
              docker exec ${{secrets.CONTAINER_NAME}} php artisan db:seed
