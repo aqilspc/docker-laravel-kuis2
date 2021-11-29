@@ -16,7 +16,6 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-	   sudo su
 	   cd /home/${{secrets.USERNAME}} && git clone git@github.com:aqilspc/docker-laravel-kuis2.git
 	   cd /home/${{secrets.USERNAME}} && mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2/
 	   cd /home/${{secrets.USERNAME}} && rm -r ${{secrets.DIR}}
@@ -30,7 +29,6 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-	     sudo su
 	     cd /home/${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose ps
 	     docker exec ${{secrets.CONTAINER_NAME}} composer install
              docker exec ${{secrets.CONTAINER_NAME}} rm .env	
