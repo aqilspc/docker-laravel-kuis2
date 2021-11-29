@@ -1,4 +1,4 @@
-name: dev-laravel-kuis2
+name: laravel-kuis-deploy2
 
 on:
   push:
@@ -6,16 +6,15 @@ on:
       - '*'
 jobs:
   build:
-  name: Build and Deploy
+    name: Build and Deploy
     runs-on: ubuntu-latest
     steps:
-	-name: test ssh
-  	uses: appleboy/ssh-action@master
-  	with:
-    	host: ${{ secrets.HOST }}
-    	username: ${{ secrets.USERNAME }}
-    	key: ${{ secrets.KEY }}
-    	port: ${{ secrets.PORT }}
-    	script: |
-      	whoami
-      	ls -al
+      - name: 'Running Test Sh'
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{ubuntu.USERNAME}}
+          key: ${{secrets.KEY}}
+          script: |
+            sudo whoami
+            sudo ls -l
