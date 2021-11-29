@@ -15,15 +15,14 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
-          script: |
-	   cd ${{secrets.USERNAME}} && 
+          script: | 
 	   sudo git clone git@github.com:aqilspc/docker-laravel-kuis2.git
-	   sudo mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2/
-	   sudo rm -r ${{secrets.DIR}}
+           cd docker-laravel-kuis2
 	   sudo git clone --single-branch --branch ${{secrets.BRANCH}} ${{secrets.REPO}}
-	   cd ${{secrets.DIR}} 
+	   sudo mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2
 	   sudo docker-compose up -d --remove-orphans
 	   sudo docker-compose restart
+	   rm -r ${{secrets.DIR}}
       - name: 'Reconnect and Publish'
         uses: appleboy/ssh-action@master
         with:
@@ -31,7 +30,8 @@ jobs:
           username: ${{secrets.USERNAME}}
           key: ${{secrets.KEY}}
           script: |
-	     cd ${{secrets.USERNAME}}/${{secrets.DIR}} && docker-compose ps
+	     cd ${{secrets.DIR}}
+	     sudo docker-compose ps
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} composer install
              sudo docker exec ${{secrets.CONTAINER_NAME}} rm .env	
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} touch .env
@@ -52,7 +52,7 @@ jobs:
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'CACHE_DRIVER=file' >> .env
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'QUEUE_CONNECTION=sync' >> .env
 	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_DRIVER=file' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_LIFETIME=120' >> .env
-	     docker exec ${{secrets.CONTAINER_NAME}} php artisan migrate
-             docker exec ${{secrets.CONTAINER_NAME}} php artisan db:seed
-	     docker exec ${{secrets.CONTAINER_NAME}} php artisan optimize:clear
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_LIFETIME=120' >> .env
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan migrate
+             sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan db:seed
+	     sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan optimize:clear
