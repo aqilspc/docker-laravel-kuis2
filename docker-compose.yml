@@ -1,0 +1,31 @@
+version: '3'
+services:
+
+  #Laravel App
+  web:
+    image: aqilspc/laravel-app-showroommobil:latest
+    container_name: web
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - mynet
+
+  #Nginx Service
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - mynet
+#Docker Networks
+networks:
+  mynet:
+    driver: bridge
