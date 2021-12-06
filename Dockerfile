@@ -45,7 +45,7 @@ RUN rm -rf /var/cache/apk/*
 COPY --chown=www-data:www-data . /var/www/html
 
 # Change current user to www
-USER www-data
+USER root
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000

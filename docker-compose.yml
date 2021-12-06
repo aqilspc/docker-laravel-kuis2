@@ -19,9 +19,9 @@ services:
     networks:
       - laravel-showroom
   #Nginx Service
-  nginx:
+  nginx-showroom:
     image: nginx:alpine
-    container_name: nginx
+    container_name: nginx-showroom
     restart: unless-stopped
     tty: true
     ports:
@@ -30,7 +30,7 @@ services:
       - ./:/var/www/html
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
-      - laravel-prod
+      - laravel-showroom
 
 #Docker Networks
 networks:
