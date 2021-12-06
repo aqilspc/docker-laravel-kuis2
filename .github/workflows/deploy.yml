@@ -1,3 +1,4 @@
+
 name: laravel-kuis-deploy2
 
 on:
@@ -6,51 +7,51 @@ on:
       - '*'
 jobs:
   build:
-    name: Build and Deploy
+    name: Deploy Deployment Configuration 
     runs-on: ubuntu-latest
     steps:
-      - name: 'Clone Deployment Configuration'
-        uses: JimCronqvist/action-ssh@master
+      - name: 'Pick docker comose as target'
+        uses: appleboy/scp-action@master
         with:
-          hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
-          privateKey: ${{secrets.KEY}}
-          command: | 
-	   sudo git clone git@github.com:aqilspc/docker-laravel-kuis2.git
-           cd docker-laravel-kuis2
-	   sudo git clone --single-branch --branch ${{secrets.BRANCH}} ${{secrets.REPO}}
-	   sudo mv ${{secrets.DIR}}/* /home/${{secrets.USERNAME}}/docker-laravel-kuis2
-	   sudo docker-compose up -d --remove-orphans
-	   sudo docker-compose restart
-	   rm -r ${{secrets.DIR}}
-      - name: 'Reconnect and Publish'
-         uses: JimCronqvist/action-ssh@master
+          host: {{ secrets.HOST }}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.KEY}}
+          source: "docker-compose.yml"
+          target: "./"
+      - name: 'Deploy Deployment Configuration'
+        uses: appleboy/scp-action@master
         with:
-          hosts: '${{secrets.USERNAME}}@${{ secrets.HOST }}:22'
-          privateKey: ${{secrets.KEY}}
-          command: |
-	     cd ${{secrets.DIR}}
-	     sudo docker-compose ps
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} composer install
-             sudo docker exec ${{secrets.CONTAINER_NAME}} rm .env	
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} touch .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_NAME=${{secrets.APP_NAME}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_URL=${{secrets.HOST}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_ENV=local' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_KEY=${{secrets.APP_KEY}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'APP_DEBUG=true' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_CHANNEL=stack' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'LOG_LEVEL=debug' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_CONNECTION=${{secrets.DB_CONNECTION}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_HOST=${{secrets.DB_HOST}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PORT=${{secrets.DB_PORT}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_DATABASE=${{secrets.DB_DATABASE}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_USERNAME=${{secrets.DB_USERNAME}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'DB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'BROADCAST_DRIVER=log' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'CACHE_DRIVER=file' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'QUEUE_CONNECTION=sync' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_DRIVER=file' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} echo 'SESSION_LIFETIME=120' >> .env
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan migrate
-             sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan db:seed
-	     sudo docker exec ${{secrets.CONTAINER_NAME}} php artisan optimize:clear
+          host: {{ secrets.HOST }}
+          username: ${{secrets.USERNAME}}
+          key: ${{secrets.KEY}}
+	  script: |
+	    sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/storage
+	    sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/bootstrap
+	    sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/public
+	    sudo rm .env
+	    sudo touch .env 
+            sudo echo 'APP_NAME=${{secrets.APP_NAME}}' >> .env 
+	    sudo echo 'APP_URL=${{secrets.HOST}}' >> .env
+	    sudo echo 'APP_ENV=local' >> .env
+	    sudo echo 'APP_KEY=${{secrets.APP_KEY}}' >> .env
+	    sudo echo 'APP_DEBUG=true' >> .env
+	    sudo echo 'LOG_CHANNEL=stack' >> .env
+	    sudo echo 'LOG_LEVEL=debug' >> .env
+	    sudo echo 'DB_CONNECTION=${{secrets.DB_CONNECTION}}' >> .env
+	    sudo echo 'DB_HOST=${{secrets.DB_HOST}}' >> .env
+	    sudo echo 'DB_PORT=${{secrets.DB_PORT}}' >> .env
+	    sudo echo 'DB_DATABASE=${{secrets.DB_DATABASE}}' >> .env
+	    sudo echo 'DB_USERNAME=${{secrets.DB_USERNAME}}' >> .env
+	    sudo echo 'DB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env
+	    sudo echo 'BROADCAST_DRIVER=log' >> .env
+	    sudo echo 'CACHE_DRIVER=file' >> .env
+	    sudo echo 'QUEUE_CONNECTION=sync' >> .env
+	    sudo echo 'SESSION_DRIVER=file' >> .env
+	    sudo echo 'SESSION_LIFETIME=120' >> .env
+	    sudo cp .env /docker-laravel-kuis2
+	    sudo docker-compose up -d /home/ubuntu/docker-laravel-kuis2
+	    sudo docker exec -it showroom composer install
+            sudo docker exec -it showroom php artisan migrate
+	    sudo docker exec -it showroom php artisan db:seed
+	    sudo docker exec -it showroom php artisan optimize:clear
+
