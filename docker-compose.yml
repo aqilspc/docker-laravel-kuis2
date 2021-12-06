@@ -2,16 +2,22 @@ version: '3'
 services:
 
   #Laravel App
-  web:
-    image: aqilspc/laravel-app-showroommobil:latest
-    container_name: web
+  showroom:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aqilspc/showroommobil
+    container_name: showroom
     restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: showroom
+      SERVICE_TAGS: showroom
     working_dir: /var/www/html
     volumes:
       - ./:/var/www/html
     networks:
-      - mynet
-
+      - laravel-showroom
   #Nginx Service
   nginx:
     image: nginx:alpine
@@ -19,13 +25,15 @@ services:
     restart: unless-stopped
     tty: true
     ports:
-      - "80:80"
+      - "8090:8090"
     volumes:
       - ./:/var/www/html
       - ./nginx/conf.d/:/etc/nginx/conf.d/
     networks:
-      - mynet
+      - laravel-prod
+
 #Docker Networks
 networks:
-  mynet:
+  laravel-showroom:
     driver: bridge
+
