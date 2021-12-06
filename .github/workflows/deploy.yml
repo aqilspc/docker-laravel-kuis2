@@ -17,12 +17,10 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd /home/ubuntu/docker-laravel-kuis2/ && sudo docker-compose up -d
-            sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/storage
-            sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/bootstrap
-            sudo chmod -R 777 /home/ubuntu/docker-laravel-kuis2/public
-            sudo rm .env
-            sudo touch .env
+            cd /home/ubuntu/docker-laravel-kuis2/
+            sudo chmod -R 777 storage
+            sudo chmod -R 777 bootstrap
+            sudo chmod -R 777 public
             sudo echo 'APP_NAME=${{secrets.APP_NAME}}' >> .env
             sudo echo 'APP_URL=${{secrets.HOST}}' >> .env
             sudo echo 'APP_ENV=local' >> .env
@@ -41,8 +39,8 @@ jobs:
             sudo echo 'QUEUE_CONNECTION=sync' >> .env
             sudo echo 'SESSION_DRIVER=file' >> .env
             sudo echo 'SESSION_LIFETIME=120' >> .env
-            sudo cp .env docker-laravel-kuis2
-            sudo docker exec -it showroom composer install
-            sudo docker exec -it showroom php artisan migrate
-            sudo docker exec -it showroom php artisan db:seed
-            sudo docker exec -it showroom php artisan optimize:clear
+            sudo docker-compose up -d
+            sudo docker exec -T showroom composer install
+            sudo docker exec -T showroom php artisan migrate
+            sudo docker exec -T showroom php artisan db:seed
+            sudo docker exec -T showroom php artisan optimize:clear
