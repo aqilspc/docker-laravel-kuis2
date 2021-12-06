@@ -9,6 +9,13 @@ jobs:
     name: Deploy Deployment Configuration 
     runs-on: ubuntu-latest
     steps:
+    - name: 'Start build job'
+        run: |
+          echo "Starting the build job"
+
+      - name: 'Checkout'
+        uses: actions/checkout@v2
+      
       - name: 'multiple command'
 	uses: appleboy/ssh-action@master
   	with:
