@@ -1,2 +1,4 @@
 docker-laravel-kuis2
-result : http://152.69.167.121:8090/
+command 
+docker-compose build
+docker-compose up -d
